@@ -1,12 +1,11 @@
 import './UserDataDemo.css';
 import useUser from "./helpers/useUser";
 import {
-	signUpWithEmailAndPassword,
+	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 	signOut
 } from "firebase/auth";
-import {auth} from "./helpers/initFirebase";
-import {useState,useEffect} from "react";
+import {useState} from "react";
 import {creatingUserWithData,useUserData} from "./helpers/userdata";
 
 const trackChange = (setData) => {
@@ -25,10 +24,10 @@ function SignOut(){
 	const userdata = useUserData();
 
 	const logOut = () => signOut();
-	return <div>
+	return (<div>
 		<h6>{user.email} is a {userdata.gender}</h6>
 		<button className="btn" onClick={logOut}>Sign Out</button>
-		</div>
+		</div>);
 }
 
 function SignIn(){
@@ -38,13 +37,15 @@ function SignIn(){
 	const [confirmpassword,setConfirmPassword] = useState();
 	const [errorText,setErrorText] = useState();
 	const [isNewUser,setNewUser] = useState();
-
-	const proceed = () => {
+    
+    const toggleNewUser = () => setNewUser(!isNewUser);
+	
+    const proceed = () => {
 		if(isNewUser && password !== confirmpassword){
 			return setErrorText("Passwords must match");
 		}
 		if(isNewUser){
-			creatingUserWithData(() => signUpWithEmailAndPassword({email,password}),{gender});
+			creatingUserWithData(() => createUserWithEmailAndPassword({email,password}),{gender});
 		}
 		else{
 			signInWithEmailAndPassword({email,password});
@@ -54,9 +55,9 @@ function SignIn(){
 	return (<div>
 		<span className="error-text">{errorText}</span>
 		{isNewUser?
-			<h6>Already have an account? <button className="btn-flat">Login</button></h6>
+			<h6>Already have an account? <button className="btn-flat" onClick={toggleNewUser}>Login</button></h6>
 			:
-			<h6>Don't have an account? <button className="btn-flat">Create account</button></h6>
+			<h6>Don't have an account? <button className="btn-flat" onClick={toggleNewUser}>Create account</button></h6>
 		}
 		<input onChange={trackChange(setEmail)} value={email} type="email"/>
 		{isNewUser? 
