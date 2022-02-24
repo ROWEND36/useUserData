@@ -9,6 +9,6 @@ const useUser = () => {
 			setUser(user);
 		});
 	},[]);
-	return user;
+	return auth.currentUser;
 }
 export default useUser;

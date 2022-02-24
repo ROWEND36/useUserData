@@ -18,23 +18,22 @@ const handleError = (handler) => (e) => {
 }
 function UserDataDemo() {
 	const signedIn = useUser();
-	return (signedIn?<SignOut/>:<SignIn/>);
+    return (signedIn?<SignOut/>:<SignIn/>);
 }
 
 function SignOut(){
 	const user = useUser();
 	const userdata = useUserData();
-
 	const logOut = () => signOut();
 	return (<div id="container">
-		<h6>{user.email} is a {userdata.gender}</h6>
+		<h6>{user.email} is a {userdata?.gender}</h6>
 		<button className="btn" onClick={logOut}>Sign Out</button>
 		</div>);
 }
 
 function SignIn(){
 	const [email,setEmail] = useState("");
-	const [gender,setGender] = useState("");
+	const [gender,setGender] = useState("male");
 	const [password,setPassword] = useState("");
 	const [confirmpassword,setConfirmPassword] = useState("");
 	const [errorText,setErrorText] = useState("");
@@ -49,10 +48,10 @@ function SignIn(){
 		}
 		setErrorText("");
 		if(isNewUser){
-			creatingUserWithData(() => createUserWithEmailAndPassword(auth,{email,password}),{gender}).catch(handleError(setErrorText));
+			creatingUserWithData(() => createUserWithEmailAndPassword(auth,email,password),{gender}).catch(handleError(setErrorText));
 		}
 		else{
-			signInWithEmailAndPassword(auth,{email,password}).catch(handleError(setErrorText));
+			signInWithEmailAndPassword(auth,email,password).catch(handleError(setErrorText));
 		}
 	}
 
