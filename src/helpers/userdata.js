@@ -57,7 +57,9 @@ export const useUserData = () =>{
  */
 export const creatingUserWithData = async (signupHook, data={}) => {
     cacheLocalData(data);
+	console.debug("cache created");
     const user = await signupHook();
+	console.debug("user signed in");
     await setUserData(user.uid,data);
     clearLocalData();
 }
