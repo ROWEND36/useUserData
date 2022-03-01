@@ -1,14 +1,26 @@
-import {onAuthStateChanged} from "firebase/auth";
-import {auth} from "./initFirebase";
-import {useState,useEffect} from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import createSubscription from "./createSubscription";
+import { auth } from "./initFirebase";
 
-const useUser = () => {
-	const [user,setUser] = useState();
-	useEffect(()=>{
-		return onAuthStateChanged(auth,(user) => {
-			setUser(user);
-		});
-	},[]);
-	return auth.currentUser;
-}
+export const [useUser, onUserChanged] = createSubscription(function (setUser) {
+  return onAuthStateChanged(
+    auth,
+    (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        setUser(user);
+        // ...
+      } else {
+        // User is signed out
+        // ...
+        setUser(null);
+      }
+    },
+    function () {
+      //Possible reason for recurrent signing out
+      setUser(null);
+    }
+  );
+});
 export default useUser;
